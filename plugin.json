@@ -1,0 +1,29 @@
+{
+  "$schema": "https://antigravity.google/schemas/v1/plugin.json",
+  "name": "profile-sidebar",
+  "displayName": "Profile Sidebar",
+  "version": "1.1.0-beta.1",
+  "description": "See your active account and plan below Settings. Open account actions and pair with Account Switcher. Experimental native UI integration for 2.34.0.",
+  "author": {
+    "name": "Nikolos89",
+    "url": "https://github.com/nikolos89"
+  },
+  "license": "MIT",
+  "logo": "assets/logo.svg",
+  "homepage": "https://github.com/nikolos89/profile-sidebar#readme",
+  "repository": "https://github.com/nikolos89/profile-sidebar",
+  "keywords": [
+    "profile",
+    "sidebar",
+    "subscription",
+    "plan",
+    "windows",
+    "antigravity",
+    "account-switcher"
+  ],
+  "suggestedPrompts": [
+    "Check whether my Antigravity version supports the Profile Sidebar native integration.",
+    "Explain how Profile Sidebar reads my active account and subscription plan.",
+    "Explain how to use Account Switcher from the profile menu."
+  ]
+}
