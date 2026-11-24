@@ -1,13 +1,17 @@
 # Changelog
 
+## 1.1.3-beta.1
+
+- Separate five-hour and weekly usage rings, with matching colors in the details popover.
+- Use the selected model’s own quota when present and applicable model-group limits otherwise.
+- Refresh usage roughly every ten seconds while visible, with no overlapping requests.
+
 ## 1.1.0-beta.1
 
-- First public distribution candidate by Nikolos89; not yet a confirmed Marketplace listing.
-- English product metadata, interface text, support information and companion links.
-- Bundled square 128 px SVG identity and an MIT license.
-- Private data, local paths, Google application bundles and SDK files excluded.
-- Explicit 2.34.0/custom-bundle compatibility gate and independent rollback; the companion installer no longer patches Account Switcher.
+- First public beta by Nikolos89.
+- English metadata, interface text, support information and companion links.
+- Windows App 2.34.0 custom-bundle compatibility check and independent rollback.
 
 ## 1.0.0
 
-- Original private local prototype. Never claimed as a public Marketplace release.
+- Original local prototype.

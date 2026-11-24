@@ -7,6 +7,8 @@ By [Nikolos89](https://github.com/nikolos89). Independent community project; not
 ## What it does
 
 - Shows your current name and the plan reported by Antigravity itself.
+- Displays five-hour usage in the outer blue ring and weekly usage in the inner purple ring. Both update roughly every ten seconds while the window is visible.
+- Opens usage details with percentages and reset times when available, plus a shortcut to the native limits page.
 - Opens Settings, Account and plan, and the native HTTPS upgrade destination when one is available.
 - Asks for confirmation before using the application's native sign-out action.
 - Opens the companion's switch or add flow when Account Switcher is enabled and ready.
@@ -16,13 +18,13 @@ An unknown plan is shown as loading rather than guessed as Free. Identity is cle
 
 ## Better together
 
-[Account Switcher](https://github.com/nikolos89/account-switcher) saves encrypted Windows account profiles and offers swipeable cards with a confirmed app restart. Profile Sidebar provides the visible current-account indicator and convenient **Switch account / Add account** menu entries; Account Switcher performs profile storage and switching.
+[Account Switcher](https://github.com/nikolos89/account-switcher) saves encrypted Windows account profiles and switches from a vertical list with a confirmed app restart. Profile Sidebar shows the active account, plan and usage, with **Switch account** and **Add account** shortcuts to the companion panel.
 
 Without Account Switcher, the profile and native account menu remain available; switch and add entries are hidden. Adding an account opens instructions for the normal Google sign-in flow.
 
 ## Read before installing: experimental native UI integration
 
-This is **1.1.0-beta.1**, limited to **Windows, Antigravity App 2.34.0 and an already active custom web bundle override**. It is not an IDE extension.
+This is **1.1.3-beta.1**, limited to **Windows, Antigravity App 2.34.0 and an already active custom web bundle override**.
 
 The public sidecar API provides auxiliary panels, but this exact footer placement currently uses an **unsupported, version-specific native UI hook**. A stock Antigravity installation does not provide the required custom bundle. **Installing this plugin through a plugin manager alone does not insert the footer.** The installer refuses to proceed when the bundle or expected anchors are absent. It does not modify app.asar or create a custom-bundle override.
 
@@ -32,7 +34,7 @@ The original local installation's profile row and native settings/account action
 
 You need Node.js 22+ and your own active, writable web bundle. The default expected path is **%LOCALAPPDATA%/Programs/Antigravity/resources/web_bundle_ru**. For another location set **PROFILE_SIDEBAR_BUNDLE** to its absolute path; the application must already be configured to serve that bundle.
 
-Download the [Profile Sidebar release ZIP](https://github.com/nikolos89/profile-sidebar/releases/tag/v1.1.0-beta.1) and extract it into its own folder. Close Antigravity yourself, then run from that folder:
+Download the [Profile Sidebar release ZIP](https://github.com/nikolos89/profile-sidebar/releases/tag/v1.1.3-beta.1) and extract it into its own folder. To update an existing public beta, first run its original installer with **--restore**, then uninstall the old Profile Sidebar package in Customizations. Close Antigravity and run from the new extracted folder:
 
 ~~~powershell
 node install.mjs --stage C:\Temp\profile-sidebar-preview
@@ -56,7 +58,7 @@ Backups and installation hashes live under **~/.gemini/antigravity/plugin_data/p
 
 ## Privacy and resources
 
-This module reads the profile and plan from the application's in-memory state. It does not read credential storage or send identity information to a plugin server. It adds no server, scheduled task, watcher or background process. Sign-out uses the native application action after confirmation. The Account Switcher companion has its own documented local sidecar and encrypted vault.
+This module reads the profile and plan from the application's in-memory state. It uses the host's own usage service to calculate the consumed percentage for the model or quota group shown in Antigravity. A ring whose quota data is missing stays unfilled. The module adds no server or background process. Sign-out uses the native application action after confirmation. Account Switcher has its own documented local sidecar and encrypted vault.
 
 ## Support and review
 

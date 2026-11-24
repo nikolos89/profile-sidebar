@@ -13,7 +13,10 @@ const accountsPath=join(homedir(),'.gemini/config/plugins/account-switcher/sidec
 const footerAnchor='"data-testid":"settings-button"}),l&&E.createElement(l)';
 const footerReplacement='"data-testid":"settings-button"}),E.createElement(AGProfileSidebarBoundary,null,E.createElement(AGProfileSidebarSlot,null)),l&&E.createElement(l)';
 const mainTag='<script src="/main.js"></script>';
-const assetsTag='<link rel="stylesheet" href="/profile-sidebar/profile-menu.css" />\n    <script src="/profile-sidebar/profile-menu.js"></script>\n      '+mainTag;
+const assetsTag="<link rel=\"stylesheet\" href=\"/profile-sidebar/profile-menu.css?v=1.1.3-beta.1\" />\n    <script src=\"/profile-sidebar/profile-quota.js?v=1.1.3-beta.1\"></script>\n    <script src=\"/profile-sidebar/profile-menu.js?v=1.1.3-beta.1\"></script>\n    "+mainTag;
+const modelAnchor='return E.createElement("button",{ref:d,type:"button","data-testid":"model-selector-trigger",';
+const modelEffect='E.useEffect(()=>{window.dispatchEvent(new Event("agp-model-change"));return()=>queueMicrotask(()=>window.dispatchEvent(new Event("agp-model-change")))},[f?.modelId,f?.label,f?.value,q,g?.isBestOfNEnabled]);';
+const modelAttributes='"data-agp-model-label":f?.label??"","data-agp-model-id":f?.modelId??"","data-agp-model-multi":q||!!g?.isBestOfNEnabled,';
 const accountMarker='/* AG_PROFILE_SIDEBAR_ACCOUNT_INTENT */';
 const accountAddon=`\n${accountMarker}\nif (new URLSearchParams(location.search).get('accountAction') === 'add') {\n  $('addHelp').open = true;\n  requestAnimationFrame(() => $('addHelp').scrollIntoView({ block:'nearest' }));\n}\n`;
 const sha=value=>createHash('sha256').update(value).digest('hex');
@@ -28,8 +31,10 @@ async function prepare(){
   exactlyOnce(main,'function Eld(){','sidebar footer component');
   exactlyOnce(main,footerAnchor,'settings footer slot');
   exactlyOnce(index,mainTag,'main script');
-  for(const dependency of ['function p6(){','function ABc(','KBc=','sB=a=>a.userStatus','function efc(){'])if(!main.includes(dependency))throw new Error('Native dependency is missing: '+dependency);
-  const patchedMain=main.replace('function Eld(){',bridge+'\nfunction Eld(){').replace(footerAnchor,footerReplacement);
+  exactlyOnce(main,modelAnchor,'selected model button');
+  for(const dependency of ['function p6(){','function ABc(','KBc=','sB=a=>a.userStatus','function efc(){','retrieveUserQuotaSummary'])if(!main.includes(dependency))throw new Error('Native dependency is missing: '+dependency);
+  const patchedMain=main.replace('function Eld(){',bridge+'\nfunction Eld(){').replace(footerAnchor,footerReplacement)
+    .replace(modelAnchor,()=>modelEffect+modelAnchor+modelAttributes);
   const patchedIndex=index.replace(mainTag,assetsTag);
   const accounts=null; // Account Switcher 1.1 includes accountAction support itself.
   return {version,main,index,patchedMain,patchedIndex,accounts};
@@ -62,8 +67,9 @@ if(command==='--stage'){
     originalMainSha256:sha(prepared.main),patchedMainSha256:sha(prepared.patchedMain),originalIndexSha256:sha(prepared.index),patchedIndexSha256:sha(prepared.patchedIndex),
     originalAccountsSha256:prepared.accounts?sha(prepared.accounts.original):null,patchedAccountsSha256:prepared.accounts?sha(prepared.accounts.patched):null};
   await mkdir(join(bundle,'profile-sidebar'),{recursive:true});
-  await copyFile(join(payload,'ui/profile-menu.js'),join(bundle,'profile-sidebar/profile-menu.js'));
-  await copyFile(join(payload,'ui/profile-menu.css'),join(bundle,'profile-sidebar/profile-menu.css'));
+  for (const asset of ['profile-menu.js','profile-menu.css','profile-quota.js']) {
+    await copyFile(join(payload,'ui',asset),join(bundle,'profile-sidebar',asset));
+  }
   if(!alreadyInTarget)await cp(payload,pluginTarget,{recursive:true,errorOnExist:true,force:false});
   try{
     if(prepared.accounts)await atomicText(accountsPath,prepared.accounts.patched);

@@ -46,13 +46,15 @@
     const [signingOut, setSigningOut] = R.useState(false);
     const [error, setError] = R.useState('');
     const [position, setPosition] = R.useState(null);
+    const [quotaOpen, setQuotaOpen] = R.useState(false);
+    const closeQuota = R.useCallback(() => setQuotaOpen(false), []);
     const trigger = R.useRef(null);
     const menu = R.useRef(null);
     const dialog = R.useRef(null);
     const menuId = R.useId();
     const dialogId = R.useId();
     const identityKey = (profile.signedIn ? 'in:' : 'out:') + profile.email;
-    R.useEffect(() => { setOpen(false); setConfirmLogout(false); setError(''); }, [identityKey]);
+    R.useEffect(() => { setOpen(false); setQuotaOpen(false); setConfirmLogout(false); setError(''); }, [identityKey]);
     R.useLayoutEffect(() => {
       if (!open || !trigger.current || !menu.current) return;
       const place = () => {
@@ -154,20 +156,28 @@
         h('button',{type:'button',className:'agp-dialog-confirm',disabled:signingOut,onClick:logout},signingOut ? 'Signing out…' : 'Sign out')
       )
     ) : null;
+    const Quota = window.__AGProfileQuota?.QuotaIndicator;
+    const hasQuotaButton = !!Quota && !!profile.email;
     return h('div',{className:'agp-footer','data-testid':'profile-sidebar-footer','data-profile-plugin':PLUGIN_ID},
+      h('div',{className:'agp-row'+(hasQuotaButton?' agp-row-with-quota':'')},
       h('button',{
         ref:trigger,type:'button',className:'agp-trigger' + (open ? ' agp-trigger-open' : ''),
         'aria-label':`Profile: ${profile.name}. ${profile.plan}`,'aria-haspopup':'menu','aria-expanded':open,'aria-controls':open ? menuId : undefined,
         title:profile.email ? `${profile.name}\n${profile.email}\n${profile.plan}` : profile.plan,
-        onClick:() => {setError('');setOpen(value => !value);},
-        onKeyDown:event => {if(event.key==='ArrowUp'||event.key==='ArrowDown'){event.preventDefault();setOpen(true);}}
+        onClick:() => {closeQuota();setError('');setOpen(value => !value);},
+        onKeyDown:event => {if(event.key==='ArrowUp'||event.key==='ArrowDown'){event.preventDefault();closeQuota();setOpen(true);}}
       }, h('span',{className:'agp-avatar','aria-hidden':true},profile.initial),
         h('span',{className:'agp-identity'},h('span',{className:'agp-name'},profile.name),h('span',{className:'agp-plan'},profile.plan)),
         h('span',{className:'agp-chevron' + (open ? ' agp-chevron-open' : '')},icon('chevron'))
-      ), !confirmLogout && error ? h('span',{className:'agp-inline-error',role:'status'},error) : null,
+      ), Quota ? h(Quota,{
+        React:R, portal:props.portal, identity:profile.email, plan:profile.plan,
+        provider:props.quotaProvider, onDetails:props.onQuotaDetails, open:quotaOpen,
+        onToggle:() => {setOpen(false);setQuotaOpen(value=>!value);}, onClose:closeQuota
+      }) : null),
+      !confirmLogout && error ? h('span',{className:'agp-inline-error',role:'status'},error) : null,
       popup ? props.portal(popup,document.body) : null,
       logoutDialog ? props.portal(logoutDialog,document.body) : null
     );
   }
-  window.__AGProfileSidebar = Object.freeze({ version:'1.1.0-beta.1', Component, isPluginEnabled, profileFromStatus, safeUpgradeUrl });
+  window.__AGProfileSidebar = Object.freeze({ version:'1.1.3-beta.1', Component, isPluginEnabled, profileFromStatus, safeUpgradeUrl });
 })();

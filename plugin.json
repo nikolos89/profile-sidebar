@@ -2,8 +2,8 @@
   "$schema": "https://antigravity.google/schemas/v1/plugin.json",
   "name": "profile-sidebar",
   "displayName": "Profile Sidebar",
-  "version": "1.1.0-beta.1",
-  "description": "See your active account and plan below Settings. Open account actions and pair with Account Switcher. Experimental native UI integration for 2.34.0.",
+  "version": "1.1.3-beta.1",
+  "description": "See your active account, plan, and five-hour and weekly usage below Settings. Pair with Account Switcher. Experimental native UI integration for Windows App 2.34.0.",
   "author": {
     "name": "Nikolos89",
     "url": "https://github.com/nikolos89"
@@ -23,7 +23,7 @@
   ],
   "suggestedPrompts": [
     "Check whether my Antigravity version supports the Profile Sidebar native integration.",
-    "Explain how Profile Sidebar reads my active account and subscription plan.",
+    "Explain the five-hour and weekly usage rings in my profile footer.",
     "Explain how to use Account Switcher from the profile menu."
   ]
 }
